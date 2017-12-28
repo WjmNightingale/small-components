@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Banner</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+        crossorigin="anonymous"></script>
+    <style>
+        .show {
+            /* border: 10px solid red; */
+            width: 300px;
+            overflow: hidden;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            margin: auto;
+        }
+
+        .container {
+            /* 防止图片变形 */
+            display: flex;
+            align-items: flex-start;
+            transition: all .5s
+            /* border: 1px solid green; */
+        }
+
+        .toggle {
+            margin: 20px 0 0;
+        }
+
+        .red {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="show" class="show">
+        <div id="container" class="container">
+            <!-- 之所以设置图片高度，是为了给图片预留出足够的空间，避免浏览器渲染flow -->
+            <img src="imgs/01.png" alt="图1" width="300">
+            <img src="imgs/02.jpg" alt="图2" width="300">
+            <img src="imgs/03.png" alt="图3" width="300">
+        </div>
+        <span class="button">
+            <span>图片1</span>
+            <span>图片2</span>
+            <span>图片3</span>
+        </span>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            var $allButtons = $('.button > span');
+            var n = 0;
+            var size = $allButtons.length;
+            for (let i = 0; i < $allButtons.length; i++) {
+                $($allButtons[i]).on('click', function (event) {
+                    var index = $(event.currentTarget).index();
+                    var x = index * -300;
+                    $('#container').css({
+                        transform: 'translateX(' + x + 'px)'
+                    });
+                    activeButton($allButtons.eq(index));
+                    // $allButtons.eq(index).addClass('red').siblings('.red').removeClass('red');
+                });
+            }
+            activeButton($allButtons.eq(n % size).trigger('click'));
+            // $allButtons.eq(n % size).trigger('click')
+            //     .addClass('red')
+            //     .siblings('.red').removeClass('red');
+
+
+            var timeId = setTimer();
+            $('#show').on('mouseenter', function (event) {
+                window.clearInterval(timeId);
+            })
+            $('#show').on('mouseleave', function (event) {
+                timeId = setTimer()
+            })
+
+            function activeButton($button) {
+                $button.addClass('red')
+                       .siblings('.red').removeClass('red')
+            }
+            function setTimer() {
+                return setInterval(() => {
+                    n += 1;
+                    $allButtons.eq(n % size).trigger('click')
+                        .addClass('red')
+                        .siblings('.red').removeClass('red');
+                }, 1000)
+            }
+        });
+    </script>
+</body>
+
+</html>
