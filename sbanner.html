@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>无缝轮播图</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+        crossorigin="anonymous"></script>
+    <style>
+        .images {
+            /* 防止图片变形 */
+            width: 300px;
+            height: 168.75px;
+            display: flex;
+            align-items: flex-start;
+            overflow: hidden;
+            left: 50%;
+            margin-left: -150px;
+            position: relative;
+            background-color: skyblue;
+        }
+
+        img.current {
+            position: absolute;
+            transition: all .5s;
+            transform: translateX(0);
+            z-index: 1;
+        }
+
+        img.enter {
+            position: absolute;
+            transition: all .5s;
+            transform: translateX(100%)
+        }
+
+        img.leave {
+            position: absolute;
+            transition: all .5s;
+            transform: translateX(-100%);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="images">
+        <img src="/imgs/01.png" alt="图片1" width=300>
+        <img src="/imgs/02.jpg" alt="图片2" width=300>
+        <img src="/imgs/03.png" alt="图片3" width=300>
+        <img src="/imgs/04.jpg" alt="图片4" width=300>
+    </div>
+    <script>
+        $(document).ready(function () {
+            let length = $('img').length;
+            init(length);
+            let n = 1;
+            console.log(getIndex(n + 1, length));
+            setInterval(() => {
+                addLeave(getImage(getIndex(n, length))).one('transitionend', (e) => {
+                    addEnter($(e.currentTarget));
+                });
+                addCurrent(getImage(getIndex(n + 1, length)));
+                n += 1;
+            }, 3000);
+
+
+            function init(imagesLength) {
+                for (let i = imagesLength; i > 0; i--) {
+                    if (i === 1) {
+                        getImage(i).addClass('current');
+                    } else {
+                        getImage(i).addClass('enter');
+                    }
+                }
+            }
+            function getImage(num) {
+                return $('.images > img:nth-child(' + num + ')');
+            }
+            function getIndex(n, length) {
+                if (n > length) {
+                    n = n % 3;
+                    if (n % 3 === 0) {
+                        n = length;
+                    }
+                }
+                console.log(n);
+                return n;
+            }
+            function addCurrent(node) {
+                return node.addClass('current').removeClass('enter');
+            }
+            function addLeave(node) {
+                console.log('在执行');
+                return node.addClass('leave').removeClass('current');
+            }
+            function addEnter(node) {
+                return node.addClass('enter').removeClass('leave');
+            }
+        });
+    </script>
+</body>
+
+</html>
