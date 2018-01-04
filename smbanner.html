@@ -63,19 +63,53 @@
             $buttons = $('#buttonWrapper > button')
             $slides = $('#slides')
             $imgs = $slides.children('img')
+            makeFakeImg()
             $slides.hide().offset()
             $slides.css({
                 transform: 'translateX(-300px)'
             }).show()
             let current = 0
-            makeFakeImg()
-            bindEvents()
-            $('#previous').on('click', function (e) {
-                goToSlide(current - 1)
-            })
-            $('#next').on('click', function (e) {
+            let timer = setInterval(function () {
                 goToSlide(current + 1)
+            }, 2000)
+
+            autoPlay()
+            bindEvents()
+            bindController()
+
+            document.addEventListener('visibilitychange', function (e) {
+                if (document.hidden) {
+                    window.clearInterval(timer);
+                } else {
+                    let current = 0
+                    let timer = setInterval(function () {
+                        goToSlide(current + 1)
+                    }, 2000)
+                    autoPlay()
+                }
             })
+
+            function autoPlay() {
+                $('#show').on('mouseenter', function () {
+                    // console.log('我进入了')
+                    window.clearInterval(timer)
+                })
+                $('#show').on('mouseleave', function () {
+                    // console.log('我离开了')
+                    timer = setInterval(function () {
+                        goToSlide(current + 1)
+                    }, 2000)
+                })
+            }
+
+            function bindController() {
+                $('#previous').on('click', function (e) {
+                    goToSlide(current - 1)
+                })
+                $('#next').on('click', function (e) {
+                    goToSlide(current + 1)
+                })
+            }
 
             function makeFakeImg() {
                 $firstCopy = $imgs.eq(0).clone(true)
