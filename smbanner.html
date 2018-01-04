@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Banner</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+        crossorigin="anonymous"></script>
+    <style>
+        .show {
+            /* border: 10px solid red; */
+            width: 300px;
+            overflow: hidden;
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+            margin: auto;
+        }
+
+        .container {
+            /* 防止图片变形 */
+            display: flex;
+            align-items: flex-start;
+            transition: all .5s
+            /* border: 1px solid green; */
+        }
+
+        .toggle {
+            margin: 20px 0 0;
+        }
+
+        .red {
+            color: red;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="show" class="show">
+        <div id="slides" class="container">
+            <!-- 之所以设置图片高度，是为了给图片预留出足够的空间，避免浏览器渲染flow -->
+            <img src="imgs/01.png" alt="图1" width="300">
+            <img src="imgs/02.jpg" alt="图2" width="300">
+            <img src="imgs/03.png" alt="图3" width="300">
+        </div>
+        <div id="controller" class="controller" style="text-align:center">
+            <button id="previous">前一张</button>
+            <button id="next">后一张</button>
+        </div>
+        <div id="buttonWrapper" class="buttonWrapper" style="text-align:center">
+            <button>1</button>
+            <button>2</button>
+            <button>3</button>
+        </div>
+    </div>
+
+    <script>
+        $(document).ready(function () {
+            $buttons = $('#buttonWrapper > button')
+            $slides = $('#slides')
+            $imgs = $slides.children('img')
+            $slides.hide().offset()
+            $slides.css({
+                transform: 'translateX(-300px)'
+            }).show()
+            let current = 0
+            makeFakeImg()
+            bindEvents()
+            $('#previous').on('click', function (e) {
+                goToSlide(current - 1)
+            })
+            $('#next').on('click', function (e) {
+                goToSlide(current + 1)
+            })
+
+            function makeFakeImg() {
+                $firstCopy = $imgs.eq(0).clone(true)
+                $lastCopy = $imgs.eq($imgs.length - 1).clone(true);
+                $slides.append($firstCopy)
+                $slides.prepend($lastCopy)
+            }
+
+            // console.log($firstCopy[0].outerHTML)
+
+            function bindEvents() {
+                $('#buttonWrapper').on('click', 'button', (e) => {
+                    let $button = $(e.currentTarget)
+                    let index = $button.index()
+                    goToSlide(index)
+                })
+            }
+
+            function goToSlide(index) {
+                if (index > $buttons.length - 1) {
+                    index = 0
+                } else if (index < 0) {
+                    index = $buttons.length - 1
+                }
+                if (current === $buttons.length - 1 && index === 0) {
+                    //从最后一张跳到第一张
+                    $slides.css({
+                        transform: 'translateX(' + ($buttons.length + 1) * -300 + 'px)'
+                    }).one('transitionend', () => {
+                        $slides.hide().offset()
+                        $slides.css({
+                            transform: 'translateX(-300px)'
+                        }).show()
+                    })
+                } else if (current === 0 && index === $buttons.length - 1) {
+                    //从第一张到最后一张
+                    $slides.css({
+                        transform: 'translateX(0px)'
+                    }).one('transitionend', (e) => {
+                        $slides.hide().offset()
+                        $slides.css({
+                            transform: 'translateX(' + ($buttons.length) * -300 + 'px)'
+                        }).show()
+                    })
+                } else {
+                    $slides.css({
+                        transform: 'translateX(' + (index + 1) * -300 + 'px)'
+                    })
+                }
+                current = index;
+            }
+
+        });
+    </script>
+</body>
+
+</html>
