@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>浮层测试</title>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+        crossorigin="anonymous"></script>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+        }
+
+        .wrapper {
+            position: relative;
+            display: inline-block;
+        }
+
+        .popver {
+            position: absolute;
+            border: 1px solid red;
+            left: 100%;
+            top: 0;
+            white-space: nowrap;
+            padding: 10px;
+            margin-left: 5px;
+            display: none;
+        }
+
+        .popver::before {
+            position: absolute;
+            content: '';
+            border: 10px solid transparent;
+            border-right-color: red;
+            right: 100%;
+            top: 0;
+        }
+
+        .popver::after {
+            position: absolute;
+            content: '';
+            border: 10px solid transparent;
+            border-right-color: white;
+            right: 100%;
+            top: 0;
+            margin-right: -1px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="wrapper" class="wrapper">
+        <button id="clickMe">点击</button>
+        <div id="popver" class="popver">
+            <input type="checkbox" />浮层</div>
+    </div>
+    <script>
+        let isShow = false;//浮层是否显示,
+        // test1()
+        // test2()
+        test3()
+
+        //第一个版本
+        function test1(isClick) {
+            $('#clickMe').on('click', (e) => {
+                isShow ? $('#popver').hide() : $('#popver').show()
+                isShow = !isShow
+            })
+            $('#wrapper').on('click', (e) => {
+                e.stopPropagation()
+            })
+            $(document).on('click', (e) => {
+                $('#popver').hide()
+                isShow = false
+            })
+        }
+
+        //节省监听器的数量，优化内存
+        function test2() {
+            $('#clickMe').on('click', (e) => {
+                isShow ? $('#popver').hide() : $('#popver').show()
+                isShow = !isShow
+                $(document).one('click', (e) => {
+                    $('#popver').hide()
+                    isShow = false
+                })
+            })
+            $('#wrapper').on('click', (e) => {
+                e.stopPropagation()
+            })
+        }
+
+        //setTimeout()
+        function test3() {
+            $('#clickMe').on('click', (e) => {
+                isShow ? $('#popver').hide() : $('#popver').show()
+                isShow = !isShow
+                setTimeout(function () {
+                    $(document).on('click', (e) => {
+                        $('#popver').hide()
+                        isShow = false
+                    })
+                }, 0)
+            })
+            $('#wrapper').on('click', (e) => {
+                e.stopPropagation()
+            })
+        }
+    </script>
+</body>
+
+</html>

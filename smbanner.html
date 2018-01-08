@@ -10,53 +10,55 @@
         crossorigin="anonymous"></script>
     <style>
         .show {
-            /* border: 10px solid red; */
             width: 300px;
             overflow: hidden;
             position: absolute;
-            top: 0;
-            right: 0;
-            bottom: 0;
-            left: 0;
-            margin: auto;
+            left: 50%;
+            margin-left: -150px;
+            /* display: flex; */
+            /* border: 5px solid black; */
         }
 
-        .container {
+        .slides {
             /* 防止图片变形 */
             display: flex;
             align-items: flex-start;
-            transition: all .5s
-            /* border: 1px solid green; */
+            transition: all .5s;
         }
-
-        .toggle {
-            margin: 20px 0 0;
-        }
-
-        .red {
-            color: red;
+        .container {
+            /* border: 5px solid blue; */
+            /* display: flex; */
         }
     </style>
 </head>
 
 <body>
+
     <div id="show" class="show">
-        <div id="slides" class="container">
-            <!-- 之所以设置图片高度，是为了给图片预留出足够的空间，避免浏览器渲染flow -->
-            <img src="imgs/01.png" alt="图1" width="300">
-            <img src="imgs/02.jpg" alt="图2" width="300">
-            <img src="imgs/03.png" alt="图3" width="300">
+        <div class="container">
+                <div style="display:inline-block;">
+                        <button id="previous">前一张</button>
+                    </div>
+                    <div id="slides" class="slides">
+                        <!-- 之所以设置图片高度，是为了给图片预留出足够的空间，避免浏览器渲染flow -->
+                        <img src="imgs/01.png" alt="图1" width="300">
+                        <img src="imgs/02.jpg" alt="图2" width="300">
+                        <img src="imgs/03.png" alt="图3" width="300">
+                    </div>
+                    <div style="display:inline-block;">
+                        <button id="next">后一张</button>
+                    </div>
         </div>
-        <div id="controller" class="controller" style="text-align:center">
-            <button id="previous">前一张</button>
-            <button id="next">后一张</button>
+        <div id="controller" style="text-align:center;">
         </div>
-        <div id="buttonWrapper" class="buttonWrapper" style="text-align:center">
+        <div id="buttonWrapper" class="buttonWrapper" style="text-align:center;background-color:red;">
             <button>1</button>
             <button>2</button>
             <button>3</button>
         </div>
     </div>
+
+
 
     <script>
         $(document).ready(function () {
